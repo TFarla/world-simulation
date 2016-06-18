@@ -24,7 +24,7 @@ defmodule World.Herder.Supervisor do
   end
 
   def add_sheep() do
-    Logger.info("A new sheep is born")
+    Logger.info("HERDER: A new sheep is born")
     Supervisor.start_child(__MODULE__, [])
   end
 end
