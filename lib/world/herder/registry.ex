@@ -1,4 +1,4 @@
-defmodule World.Farm.Registry do
+defmodule World.Herder.Registry do
   use GenServer
   alias World.Time.Duration
   require Logger
@@ -15,7 +15,7 @@ defmodule World.Farm.Registry do
     {:ok, state}
   end
 
-  def get_cabbage() do
+  def get_sheep() do
     GenServer.call(@name, :get)
   end
 
@@ -25,14 +25,14 @@ defmodule World.Farm.Registry do
   end
 
   def handle_info(:add, state) do
-    {:ok, pid} = World.Farm.Supervisor.add_cabbage
+    {:ok, pid} = World.Herder.Supervisor.add_sheep
     Process.monitor(pid)
     {:noreply, [pid|state]}
   end
 
   def handle_info({:DOWN, _ref, :process, pid, _reason}, state) do
-    {:noreply, Enum.filter(state, fn (cabbage) ->
-      pid == cabbage
+    {:noreply, Enum.filter(state, fn (sheep) ->
+      pid == sheep
     end)}
   end
 end

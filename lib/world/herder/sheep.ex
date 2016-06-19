@@ -1,19 +1,15 @@
 defmodule World.Herder.Sheep do
   use GenServer
+  alias World.Time.Duration
   require Logger
 
   def start_link do
-    resp = {:ok, pid} = GenServer.start_link(__MODULE__, [], [])
-    :timer.send_interval(10000, pid, :eat)
-    :timer.send_after(50000, spawn(fn ->
-      receive do
-        :die -> die()
-      end
-    end), :die)
-    resp
+    GenServer.start_link(__MODULE__, [], [])
   end
 
   def init([]) do
+    {:ok, _} = World.Time.Interval.start_link(self, %Duration{amount: 1, name: :day}, :eat)
+    {:ok, _} = World.Time.Timeout.start_link(self, %Duration{amount: 5, name: :day}, :die)
     {:ok, %{days_without_eating: 0}}
   end
 
@@ -31,6 +27,11 @@ defmodule World.Herder.Sheep do
         World.Farm.Supervisor.eat_cabbage(cabbage)
         {:noreply, %{state | days_without_eating: 0}}
     end
+  end
+
+  def handle_info(:die, state) do
+    die()
+    {:noreply, state}
   end
 
   defp die() do

@@ -3,9 +3,7 @@ defmodule World.Herder.Supervisor do
   require Logger
 
   def start_link do
-    resp = {:ok, _} = Supervisor.start_link(__MODULE__, :ok, [name: __MODULE__])
-    loop
-    resp
+    Supervisor.start_link(__MODULE__, :ok, [name: __MODULE__])
   end
 
   def init(_) do
@@ -13,14 +11,6 @@ defmodule World.Herder.Supervisor do
       worker(World.Herder.Sheep, [], restart: :transient)
     ]
     supervise(children, strategy: :simple_one_for_one)
-  end
-
-  defp loop do
-    spawn_link(fn ->
-      :timer.sleep(20000)
-      add_sheep()
-      loop
-    end)
   end
 
   def add_sheep() do
