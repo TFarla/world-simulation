@@ -1,13 +1,11 @@
 defmodule World.WolfPack do
   use Supervisor
-  alias World.Time.Duration
 
-  def start_link(registry, sup) do
-    Supervisor.start_link(__MODULE__, {registry, sup}, [])
+  def start_link(registry, sup, duration) do
+    Supervisor.start_link(__MODULE__, {registry, sup, duration}, [])
   end
 
-  def init({registry, sup}) do
-    duration = %Duration{amount: 2, name: :day}
+  def init({registry, sup, duration}) do
     handler = World.Wolf.SpawnHandler
 
     children = [

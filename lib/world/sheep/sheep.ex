@@ -9,7 +9,7 @@ defmodule World.Sheep do
 
   def init([]) do
     {:ok, _} = World.Time.Interval.start_link(self, %Duration{amount: 1, name: :day}, :eat)
-    {:ok, _} = World.Time.Timeout.start_link(self, %Duration{amount: 5, name: :day}, :die)
+    {:ok, _} = World.Time.Timeout.start_link(self, %Duration{amount: 3, name: :day}, :die)
     {:ok, %{days_without_eating: 0}}
   end
 
@@ -18,29 +18,28 @@ defmodule World.Sheep do
       nil ->
         Logger.info("SHEEP <#{inspect self}>: No food found")
         if (days_without_eating == 2) do
-          die()
+          die(self)
         end
 
         {:noreply, %{state | days_without_eating: days_without_eating + 1}}
       cabbage ->
         Logger.info("SHEEP <#{inspect self}>: Eating cabage <#{inspect cabbage}>")
-        eat_cabbage(cabbage)
+        eat(cabbage)
         {:noreply, %{state | days_without_eating: 0}}
     end
   end
 
   def handle_info(:die, state) do
-    die()
+    die(self)
     {:noreply, state}
   end
 
-  defp die() do
-    Logger.info("SHEEP <#{inspect self}>: has died")
-    Process.exit(self, :normal)
+  defp die(pid) do
+    Logger.info("SHEEP <#{inspect pid}>: has died")
+    GenServer.stop(pid)
   end
 
-  defp eat_cabbage(cabbage) do
+  defp eat(cabbage) do
     GenServer.stop(cabbage)
-
   end
 end
