@@ -2,26 +2,18 @@ defmodule World.Cabbage.Supervisor do
   use Supervisor
   require Logger
 
-  @name __MODULE__
-
-  def start_link do
-    Supervisor.start_link(__MODULE__, :ok, [name: @name])
+  def start_link(opts \\ []) do
+    Supervisor.start_link(__MODULE__, [], opts)
   end
 
-  def init(_) do
+  def init([]) do
     children = [
       worker(World.Cabbage, [], restart: :transient)
     ]
     supervise(children, strategy: :simple_one_for_one)
   end
 
-  def add_cabbage() do
-    resp = {:ok, pid} = Supervisor.start_child(@name, [])
-    Logger.info("FARM #{inspect pid}: New cabbage started")
-    resp
-  end
-
-  def eat_cabbage(cabbage) do
-    Supervisor.terminate_child(@name, cabbage)
+  def add(sup) do
+    Supervisor.start_child(sup, [])
   end
 end
