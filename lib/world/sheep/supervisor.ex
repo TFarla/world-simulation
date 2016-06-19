@@ -1,4 +1,4 @@
-defmodule World.Herder.Supervisor do
+defmodule World.Sheep.Supervisor do
   use Supervisor
   require Logger
 
@@ -8,7 +8,7 @@ defmodule World.Herder.Supervisor do
 
   def init(_) do
     children = [
-      worker(World.Herder.Sheep, [], restart: :transient)
+      worker(World.Sheep, [], restart: :transient)
     ]
     supervise(children, strategy: :simple_one_for_one)
   end

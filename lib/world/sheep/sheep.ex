@@ -1,4 +1,4 @@
-defmodule World.Herder.Sheep do
+defmodule World.Sheep do
   use GenServer
   alias World.Time.Duration
   require Logger
@@ -14,7 +14,7 @@ defmodule World.Herder.Sheep do
   end
 
   def handle_info(:eat, state = %{days_without_eating: days_without_eating}) do
-    case World.Farm.Registry.get_cabbage() do
+    case World.Registry.get(:cabbage_registry) do
       nil ->
         Logger.info("SHEEP <#{inspect self}>: No food found")
         if (days_without_eating == 2) do
@@ -24,7 +24,7 @@ defmodule World.Herder.Sheep do
         {:noreply, %{state | days_without_eating: days_without_eating + 1}}
       cabbage ->
         Logger.info("SHEEP <#{inspect self}>: Eating cabage <#{inspect cabbage}>")
-        World.Farm.Supervisor.eat_cabbage(cabbage)
+        eat_cabbage(cabbage)
         {:noreply, %{state | days_without_eating: 0}}
     end
   end
@@ -37,5 +37,10 @@ defmodule World.Herder.Sheep do
   defp die() do
     Logger.info("SHEEP <#{inspect self}>: has died")
     Process.exit(self, :normal)
+  end
+
+  defp eat_cabbage(cabbage) do
+    GenServer.stop(cabbage)
+
   end
 end

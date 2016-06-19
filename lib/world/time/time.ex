@@ -10,7 +10,7 @@ defmodule World.Time do
 
   def init(_) do
     # all durations are in ms
-    state = %{day: 1_000}
+    state = %{day: 10_000}
     {:ok, state}
   end
 

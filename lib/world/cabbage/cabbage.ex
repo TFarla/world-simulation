@@ -1,4 +1,4 @@
-defmodule World.Farm.Cabbage do
+defmodule World.Cabbage do
   use GenServer
   require Logger
 

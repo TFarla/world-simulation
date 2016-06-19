@@ -1,4 +1,4 @@
-defmodule World.Farm.Supervisor do
+defmodule World.Cabbage.Supervisor do
   use Supervisor
   require Logger
 
@@ -10,7 +10,7 @@ defmodule World.Farm.Supervisor do
 
   def init(_) do
     children = [
-      worker(World.Farm.Cabbage, [], restart: :transient)
+      worker(World.Cabbage, [], restart: :transient)
     ]
     supervise(children, strategy: :simple_one_for_one)
   end
