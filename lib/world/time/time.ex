@@ -4,8 +4,8 @@ defmodule World.Time do
 
   @name __MODULE__
 
-  def start_link do
-    GenServer.start_link(__MODULE__, %{}, [name: @name])
+  def start_link() do
+    GenServer.start_link(__MODULE__, [], [name: @name])
   end
 
   def init(_) do
@@ -15,7 +15,7 @@ defmodule World.Time do
   end
 
   def send_every(name, pid, message) do
-    spawn(fn ->
+    spawn_link(fn ->
       duration = get(name)
       :timer.send_after(duration, self, message)
       receive do
